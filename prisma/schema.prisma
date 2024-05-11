@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator zod {
+  provider = "prisma-zod-generator"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum PersonType {
+  USER
+  CLIENT
+}
+
+enum MoviePersonType {
+  DIRECTOR
+  ACTOR
+}
+
+enum RentalStatus {
+  REGULAR
+  DELAYED
+  DELIVERED
+}
+
+model Person {
+  id          Int        @id @default(autoincrement())
+  avatar      String?
+  email       String     @unique
+  type        PersonType
+  full_name   String
+  is_verified Boolean    @default(false)
+  password    String
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  rentals     Rental[]   @relation("RenterRentals")
+
+  @@index([full_name])
+  @@index([type])
+}
+
+model MoviePerson {
+  id         Int             @id @default(autoincrement())
+  type       MoviePersonType
+  avatar     String?
+  full_name  String          @unique
+  created_at DateTime        @default(now())
+  updated_at DateTime        @updatedAt
+  cast       MovieCast[]     @relation("MovieCasts")
+
+  @@index([full_name])
+  @@index([type])
+}
+
+model Category {
+  id         Int      @id @default(autoincrement())
+  name       String
+  movies     Movie[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([name])
+}
+
+model Movie {
+  id             Int          @id @default(autoincrement())
+  title          String       @unique
+  release_year   Int
+  featured_image String?
+  thumb_image    String?
+  synopsis       String?
+  rental_value   Float
+  created_at     DateTime     @default(now())
+  updated_at     DateTime     @updatedAt
+  category_id    Int
+  category       Category     @relation(fields: [category_id], references: [id])
+  cast           MovieCast[]  @relation("MovieCasts")
+  stock          MovieStock[] @relation("MovieStocks")
+
+  @@index([category_id])
+}
+
+model MovieCast {
+  id         Int             @id @default(autoincrement())
+  movie_id   Int
+  person_id  Int
+  created_at DateTime        @default(now())
+  updated_at DateTime        @updatedAt
+  movie      Movie           @relation("MovieCasts", fields: [movie_id], references: [id])
+  person     MoviePerson     @relation("MovieCasts", fields: [person_id], references: [id])
+
+  @@index([movie_id])
+  @@index([person_id])
+}
+
+model MovieStock {
+  id         Int      @id @default(autoincrement())
+  movie_id   Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  movie      Movie    @relation("MovieStocks", fields: [movie_id], references: [id])
+  rentals    Rental[] @relation("MovieRentals")
+
+  @@index([movie_id])
+}
+
+model Rental {
+  id            Int          @id @default(autoincrement())
+  withdrawal_at DateTime     @default(now())
+  delivery_at   DateTime?
+  due_at        DateTime
+  late_fee      Float
+  total_amount  Float
+  status        RentalStatus
+  created_at    DateTime     @default(now())
+  updated_at    DateTime     @updatedAt
+  renter_id     Int
+  renter        Person       @relation("RenterRentals", fields: [renter_id], references: [id])
+  movie_stock_id Int
+  movie_stock   MovieStock        @relation("MovieRentals", fields: [movie_stock_id], references: [id])
+
+  @@index([movie_stock_id])
+  @@index([renter_id])
+}
