@@ -12,7 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
-import { CategoryResponseData } from '@/types';
+import { RentalResponseData } from '@/types';
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
@@ -21,9 +21,9 @@ interface DataTableViewOptionsProps<TData> {
 export function DataTableViewOptions<TData>({
   table
 }: DataTableViewOptionsProps<TData>) {
-  const dict: CategoryResponseData = {
+  const dict: RentalResponseData = {
     id: 'ID',
-    name: 'Nome',
+    status: 'Status',
     created_at: 'Criado em',
     updated_at: 'Atualizado em'
   };

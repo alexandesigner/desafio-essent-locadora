@@ -12,7 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
-import { CategoryResponseData } from '@/types';
+import { MovieResponseData } from '@/types';
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
@@ -21,7 +21,7 @@ interface DataTableViewOptionsProps<TData> {
 export function DataTableViewOptions<TData>({
   table
 }: DataTableViewOptionsProps<TData>) {
-  const dict: CategoryResponseData = {
+  const dict: MovieResponseData = {
     id: 'ID',
     title: 'Título',
     synopsis: 'Sinopse',

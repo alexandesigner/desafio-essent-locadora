@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import clsx from 'clsx';
 import {
   LayoutDashboard,
@@ -13,13 +13,14 @@ import {
   LogOut
 } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useCurrentPerson } from '@/hooks/use-auth';
 import { getInitials } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 
 function Sidebar() {
+  const pathname = usePathname();
   const router = useRouter();
   const currentPerson = useCurrentPerson();
 
@@ -78,7 +79,7 @@ function Sidebar() {
   }, [currentPerson?.type]);
 
   const handleCurrentPage = (href: string) => {
-    return router.asPath === href;
+    return pathname === href;
   };
 
   return (
@@ -120,17 +121,17 @@ function Sidebar() {
               {currentPerson && (
                 <ul role='list' className='-mx-2 space-y-1'>
                   {navigationOpts?.map((item) => (
-                    <>
+                    <React.Fragment key={item.name}>
                       {item?.isVisible ? (
-                        <li key={item.name}>
+                        <li>
                           <Link
                             href={item.href}
                             className={clsx(
-                              'flex items-center gap-4 px-2 py-2 rounded-lg text-white hover:bg-black hover:bg-opacity-15',
+                              'flex items-center gap-4 px-2 py-2 rounded-lg  hover:bg-black hover:bg-opacity-15',
                               {
-                                'bg-black bg-opacity-15': handleCurrentPage(
-                                  item.href as string
-                                )
+                                'bg-black bg-opacity-15 text-blue-400':
+                                  handleCurrentPage(item.href),
+                                'text-white': !handleCurrentPage(item.href)
                               }
                             )}
                           >
@@ -141,7 +142,7 @@ function Sidebar() {
                       ) : (
                         <div />
                       )}
-                    </>
+                    </React.Fragment>
                   ))}
                 </ul>
               )}

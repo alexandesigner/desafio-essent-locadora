@@ -12,7 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
-import { CategoryResponseData } from '@/types';
+import { PersonResponseData } from '@/types';
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
@@ -21,9 +21,12 @@ interface DataTableViewOptionsProps<TData> {
 export function DataTableViewOptions<TData>({
   table
 }: DataTableViewOptionsProps<TData>) {
-  const dict: CategoryResponseData = {
+  const dict: PersonResponseData = {
     id: 'ID',
-    name: 'Nome',
+    full_name: 'Nome',
+    email: 'E-mail',
+    type: 'Tipo',
+    is_verified: 'Verificado?',
     created_at: 'Criado em',
     updated_at: 'Atualizado em'
   };
