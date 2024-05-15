@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { Check } from 'lucide-react';
 import {
   Select,
@@ -23,20 +23,20 @@ export type SelectedCastType = MovieResponseData[] | [];
 
 function MoviePersonSelect({ form, hasEdit }: { form: any; hasEdit?: any }) {
   const moviePerson = useMoviePerson({ enabled: true });
-  const moviePersonData = moviePerson.data?.data;
-  const [castOpts, setCastOpts] = React.useState(moviePersonData);
-  const [selectedCast, setSelectedCast] = React.useState<SelectedCastType>([]);
+  const moviePersonData = moviePerson?.data?.data;
+  const [castOpts, setCastOpts] = useState(moviePersonData);
+  const [selectedCast, setSelectedCast] = useState<SelectedCastType>([]);
 
   const handleChange = (value: number) => {
-    const movieData = moviePersonData?.find(
+    const cast = moviePersonData?.find(
       (movie: MovieResponseData) => movie?.id === value
     );
     const hasItem = selectedCast?.find(
       (movie: MovieResponseData) => movie?.id === value
     );
 
-    if (movieData?.id && !hasItem) {
-      setSelectedCast([...selectedCast, movieData]);
+    if (cast?.id && !hasItem) {
+      setSelectedCast([...selectedCast, cast]);
       const removedItem = castOpts?.filter(
         (movie: MovieResponseData) => movie?.id !== value
       );
@@ -71,17 +71,22 @@ function MoviePersonSelect({ form, hasEdit }: { form: any; hasEdit?: any }) {
     }
   }, [castOpts, form, selectedCast, hasEdit]);
 
+  const handleSelectedId = useCallback((id, cast) => {
+    setSelectedCast((prev: MovieResponseData) => {
+      if (!prev.find((item: MovieResponseData) => item.id === id)) {
+        return [...prev, cast?.find((el: MovieResponseData) => el.id === id)];
+      }
+      return prev;
+    });
+  }, []);
+
   useEffect(() => {
     if (hasEdit?.cast?.length && castOpts?.length) {
-      castOpts?.map((item) => {
-        hasEdit?.cast?.map((cast: MovieCastResponseData) => {
-          if (item.id === cast.id) {
-            setSelectedCast([...selectedCast, item]);
-          }
-        });
+      hasEdit.cast.forEach((item) => {
+        handleSelectedId(item.id, castOpts);
       });
     }
-  }, [castOpts, hasEdit, selectedCast]);
+  }, [castOpts, handleSelectedId, hasEdit]);
 
   const renderPersonOpts = (type: string, castOpts: SelectedCastType) => castOpts?.length ?
     removeDuplicates(
