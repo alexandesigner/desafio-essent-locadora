@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import {
   getRentals,
   getRentalById,
@@ -5,7 +6,6 @@ import {
   deleteRental,
   updateRental
 } from '@/service/rental/http';
-import { Prisma } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 export const useRentals = (config: { enabled: boolean }) => {

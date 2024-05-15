@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { toast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
 import {
   Form,
@@ -47,12 +48,17 @@ function RegisterForm() {
       });
     } catch (err: any) {
       console.error('@register/error', err?.response);
+    } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
     if (isSuccess && registerResponse?.meta?.ok) {
+      toast({
+        title: 'Cadastro realizado com sucesso!',
+        description: 'Você será redirecionado para o login',
+      });
       router.push('/login');
     }
   }, [isSuccess, registerResponse, router]);

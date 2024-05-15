@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { Prisma } from '@prisma/client';
 import {
   createPerson,
   deletePerson,
@@ -6,12 +7,6 @@ import {
   getPersons,
   updatePerson
 } from '@/service/person/http';
-import {
-  createMoviePerson,
-  updateMoviePerson,
-  deleteMoviePerson
-} from '@/service/movie/http';
-import { Prisma } from '@prisma/client';
 
 export const usePersons = (config: { enabled: boolean }) => {
   return useQuery({

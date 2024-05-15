@@ -124,3 +124,13 @@ export function groupByCategory(
 
   return Array.from(categoriesMap.values());
 }
+
+export function removeDuplicates(arr: any[]) {
+  if (!arr?.length) return [];
+  const seen = new Set();
+  return arr.filter((el: any) => {
+    const duplicate = seen.has(el.value);
+    seen.add(el.value);
+    return !duplicate;
+  });
+}

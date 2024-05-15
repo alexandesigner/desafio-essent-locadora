@@ -19,12 +19,12 @@ export default function AuthLayout({
     () => (
       <div className='flex flex-col'>
         <div className='flex-grow'>
-          <div className='w-full flex flex-col justify-start my-12 items-center px-4'>
+          <div className='w-full flex flex-col justify-start my-8 items-center px-4'>
             <Link href='/' title='Link para o início'>
               <img
                 src='https://youoatiwlsqmiivcqzoa.supabase.co/storage/v1/object/public/essent-locadora/logo-blue.svg'
                 alt='Logo Essent'
-                width='320'
+                width='220'
               />
             </Link>
           </div>

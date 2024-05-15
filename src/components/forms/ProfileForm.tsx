@@ -66,6 +66,10 @@ export function ProfileForm() {
       });
     } catch (err: any) {
       console.error('@profile/error', err?.response);
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
     }
   }
 

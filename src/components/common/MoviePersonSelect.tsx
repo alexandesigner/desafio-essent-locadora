@@ -1,5 +1,5 @@
-import * as React from 'react';
-
+import React, { useEffect } from 'react';
+import { Check } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -15,40 +15,53 @@ import {
   FormItem,
   FormLabel
 } from '@/components/ui/form';
-import { removeEmptyValuesFromList } from '@/lib/utils';
+import { removeDuplicates, removeEmptyValuesFromList } from '@/lib/utils';
 import { useMoviePerson } from '@/hooks/use-movies';
+import { MovieResponseData } from '@/types';
+
+export type SelectedCastType = MovieResponseData[] | [];
 
 function MoviePersonSelect({ form, hasEdit }: { form: any; hasEdit?: any }) {
   const moviePerson = useMoviePerson({ enabled: true });
   const moviePersonData = moviePerson.data?.data;
   const [castOpts, setCastOpts] = React.useState(moviePersonData);
-  const [selectedCast, setSelectedCast] = React.useState([]);
+  const [selectedCast, setSelectedCast] = React.useState<SelectedCastType>([]);
 
-  const handleChange = (value: any, field: any) => {
-    const hasItem = selectedCast?.find((m) => m?.id === v);
-    if (!hasItem) {
-      setSelectedCast((prev) => {
-        return [...selectedCast, moviePersonData?.find((m) => m?.id === v)];
-      });
-      setCastOpts(castOpts?.filter((m) => m?.id !== v));
-    } else {
-      setSelectedCast(selectedCast?.filter((m) => m?.id !== v));
-      setCastOpts([...castOpts, moviePersonData?.find((m) => m?.id === v)]);
+  const handleChange = (value: number) => {
+    const movieData = moviePersonData?.find(
+      (movie: MovieResponseData) => movie?.id === value
+    );
+    const hasItem = selectedCast?.find(
+      (movie: MovieResponseData) => movie?.id === value
+    );
+
+    if (movieData?.id && !hasItem) {
+      setSelectedCast([...selectedCast, movieData]);
+      const removedItem = castOpts?.filter(
+        (movie: MovieResponseData) => movie?.id !== value
+      );
+    }
+
+    if (hasItem) {
+      setSelectedCast(
+        selectedCast?.filter((movie: MovieResponseData) => movie?.id !== value)
+      );
     }
   };
 
   const handleRemove = (id: number) => {
-    setSelectedCast(selectedCast?.filter((m) => m?.id !== item.id));
-    setCastOpts([...castOpts, moviePersonData?.find((m) => m?.id === item.id)]);
+    setSelectedCast(
+      selectedCast?.filter((movie: MovieResponseData) => movie?.id !== id)
+    );
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!castOpts?.length && moviePersonData?.length) {
       setCastOpts(moviePersonData);
     }
   }, [castOpts, moviePersonData]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedCast?.length) {
       form.setValue('cast', {
         connect: removeEmptyValuesFromList(selectedCast)
@@ -58,33 +71,36 @@ function MoviePersonSelect({ form, hasEdit }: { form: any; hasEdit?: any }) {
     }
   }, [castOpts, form, selectedCast, hasEdit]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (hasEdit?.cast?.length && castOpts?.length) {
       castOpts?.map((item) => {
-        hasEdit?.cast?.map((cast) => {
+        hasEdit?.cast?.map((cast: MovieCastResponseData) => {
           if (item.id === cast.id) {
-            setSelectedCast((prev) => [...prev, item]);
+            setSelectedCast([...selectedCast, item]);
           }
         });
       });
     }
-  }, [castOpts, hasEdit]);
+  }, [castOpts, hasEdit, selectedCast]);
 
-  const renderDirectorOpts = castOpts
-    ?.filter((person: any) => person.type === 'DIRECTOR')
-    .map((person: any) => (
-      <SelectItem key={person.id} value={person.id}>
-        {person.id} - {person?.full_name}
-      </SelectItem>
-    ));
+  const renderPersonOpts = (type: string, castOpts: SelectedCastType) => castOpts?.length ?
+    removeDuplicates(
+      castOpts
+        ?.filter((person: MovieResponseData) => person.type === type)
+        .map((person: MovieResponseData) => (
+          <SelectItem key={person.id} value={person.id} className="flex flex-row items-center">
+            <div className="flex flex-row items-center gap-2">
+              {selectedCast?.find((item) => item?.id === person?.id) ? (
+                <Check size="12px" />
+              ) : undefined}
+              {person.id} - {person?.full_name}
+            </div>
+          </SelectItem>
+        ))
+    ) : undefined;
 
-  const renderActorsOpts = castOpts
-    ?.filter((person: any) => person.type === 'ACTOR')
-    .map((person: any) => (
-      <SelectItem key={person?.id} value={person?.id}>
-        {person.id} - {person?.full_name}
-      </SelectItem>
-    ));
+  const renderDirectorOpts = renderPersonOpts('DIRECTOR', castOpts);
+  const renderActorsOpts = renderPersonOpts('ACTOR', castOpts);
 
   return (
     <div className='flex flex-col space-y-4'>
@@ -96,7 +112,7 @@ function MoviePersonSelect({ form, hasEdit }: { form: any; hasEdit?: any }) {
             <FormItem>
               <FormLabel className='font-bold'>Elenco</FormLabel>
               <Select
-                onValueChange={(v) => handleChange(v, field)}
+                onValueChange={(v) => handleChange(v)}
                 defaultValue={field.value}
               >
                 <FormControl>
@@ -104,16 +120,18 @@ function MoviePersonSelect({ form, hasEdit }: { form: any; hasEdit?: any }) {
                     <SelectValue placeholder='Selecione as pessoas para o elenco' />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel className='font-bold'>Diretor</SelectLabel>
-                    {renderDirectorOpts}
-                  </SelectGroup>
-                  <SelectGroup>
-                    <SelectLabel className='font-bold'>Ator</SelectLabel>
-                    {renderActorsOpts}
-                  </SelectGroup>
-                </SelectContent>
+                {castOpts?.length ? (
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel className='font-bold'>Diretor</SelectLabel>
+                      {renderDirectorOpts}
+                    </SelectGroup>
+                    <SelectGroup>
+                      <SelectLabel className='font-bold'>Ator</SelectLabel>
+                      {renderActorsOpts}
+                    </SelectGroup>
+                  </SelectContent>
+                ) : undefined}
               </Select>
             </FormItem>
           )}

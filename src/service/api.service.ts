@@ -32,6 +32,7 @@ async function ApiService<T>(
       const sessionError =
         res?.meta?.message === 'jwt expired' ||
         res?.meta?.message === 'Cannot convert undefined or null to object';
+
       if (sessionError) {
         window.location.replace('/login');
       }
@@ -41,6 +42,10 @@ async function ApiService<T>(
         title: 'API HTTP error',
         description: !!sessionError ? 'Session expired!' : res?.meta?.message
       });
+
+      if (typeof window !== 'undefined' && response.status === 401) {
+        window.localStorage.removeItem('USER_TOKEN');
+      }
 
       return;
     }

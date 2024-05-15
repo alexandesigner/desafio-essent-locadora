@@ -6,6 +6,7 @@ import * as z from 'zod';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from '@/components/ui/use-toast';
 import {
   Form,
   FormControl,
@@ -29,7 +30,7 @@ function LoginForm() {
     }
   });
 
-  const { data: loginResponse, mutate: loginRequest, isSuccess } = useLogin();
+  const { data: loginResponse, mutate: loginRequest, isSuccess, isError } = useLogin();
 
   async function onSubmit(data: z.infer<typeof LoginPersonInputValidation>) {
     try {
@@ -37,12 +38,18 @@ function LoginForm() {
       await loginRequest(data);
     } catch (err: any) {
       console.error('@login/error', err?.response);
-      setLoading(false);
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
     }
   }
 
   useEffect(() => {
     if (isSuccess && loginResponse?.meta?.ok && loginResponse?.data?.token) {
+      toast({
+        title: 'Seja bem-vindo!'
+      });
       localStorage.setItem('USER_TOKEN', loginResponse.data.token);
       router.push('/');
     }

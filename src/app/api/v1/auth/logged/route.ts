@@ -16,7 +16,11 @@ export async function GET(req: Request) {
     }
     return errorResponse('Unauthorized', 401);
   } catch (err: any) {
-    return (err as any)?.message === 'jwt expired'
+    const hasExpired = err?.message === 'jwt expired';
+    if (typeof window !== 'undefined' && hasExpired) {
+      window.localStorage.removeItem('USER_TOKEN');
+    }
+    return hasExpired
       ? errorResponse('Session expired!', 401)
       : errorResponse((err as any)?.message, 400);
   }
