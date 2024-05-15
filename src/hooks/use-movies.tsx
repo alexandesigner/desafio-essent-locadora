@@ -14,7 +14,7 @@ import {
 import { Prisma } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-export const useMovies = (params, config: { enabled: boolean }) => {
+export const useMovies = (params: any, config: { enabled: boolean }) => {
   return useQuery({
     queryKey: ['movies'],
     queryFn: async () => getMovies(params),

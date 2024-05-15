@@ -24,6 +24,7 @@ export const MovieService = {
         ...opts
       });
     }
+    console.log('opts', opts);
 
     const query = {
       include: {

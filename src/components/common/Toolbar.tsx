@@ -85,7 +85,7 @@ function Toolbar() {
                 ?.slice(0, 9)
                 ?.map((category: CategoryResponseData) => (
                   <Link
-                    href={`/${slugify(category.name)}`}
+                    href={`/${category?.id}_${slugify(category.name)}`}
                     key={category.id}
                     className={`hover:text-primary hover:underline cursor-pointer flex items-center gap-2 font-bold text-primary`}
                   >

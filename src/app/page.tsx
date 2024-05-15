@@ -6,11 +6,11 @@ import Toolbar from '@/components/common/Toolbar';
 import MoviesList from '@/components/common/MoviesList';
 import { useMovies } from '@/hooks/use-movies';
 import { useMoviePerson } from '@/hooks/use-movies';
-import { groupByCategory } from '@/lib/utils';
+import { groupByCategory, slugify } from '@/lib/utils';
 import {
   GroupedCategory,
   MovieResponseData,
-  PersonResponseData
+  MoviePersonResponseData
 } from '@/types';
 import MoviePersonList from '@/components/common/MoviePersonList';
 import ListSkeleton from '@/components/common/ListSkeleton';
@@ -22,7 +22,7 @@ export default function Home() {
   const moviesData = movies?.data?.data as MovieResponseData[];
   const personsData = persons?.data?.data?.length
     ? persons?.data?.data?.slice(0, 6)
-    : (persons?.data?.data as PersonResponseData[]);
+    : (persons?.data?.data as MoviePersonResponseData[]);
   const moviesGrouped = groupByCategory(moviesData);
 
   const randomMovie =
@@ -37,9 +37,13 @@ export default function Home() {
         <div className='flex w-full mb-12 relative rounded-bl-[80px] rounded-br-[80px] overflow-hidden'>
           <div className='absolute left-0 bottom-0 w-full h-full bg-gradient-to-t from-black to-transparent'></div>
           <img
-            src={randomMovie?.featured_image}
-            alt='Banner'
+            src={randomMovie?.featured_image ?? 'https://youoatiwlsqmiivcqzoa.supabase.co/storage/v1/object/public/essent-locadora/thumb.png'}
+            alt='Banner de destaque'
             className='w-full h-[680px] object-cover rounded-bl-[80px] rounded-br-[80px]'
+            onError={(e) => {
+              e.currentTarget.src =
+                'https://youoatiwlsqmiivcqzoa.supabase.co/storage/v1/object/public/essent-locadora/thumb.png';
+            }}
           />
           <div className='py-12 absolute left-0 bottom-0 flex flex-wrap flex-col px-24'>
             <p className='text-white text-lg mt-4'>
@@ -50,7 +54,7 @@ export default function Home() {
             </h3>
             <p className='text-white text-lg mt-4'>{randomMovie?.title}</p>
             <Link
-              href='/'
+              href={`/${slugify(randomMovie?.category?.name)}/${randomMovie?.id}_${slugify(randomMovie?.title)}`}
               title='Ver detalhes'
               className='bg-white font-bold max-w-[220px] text-center text-primary mt-6 rounded-lg py-4 px-12 text-lg'
             >

@@ -49,7 +49,9 @@ function RegisterForm() {
     } catch (err: any) {
       console.error('@register/error', err?.response);
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000)
     }
   }
 

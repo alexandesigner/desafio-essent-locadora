@@ -113,8 +113,18 @@ export interface MovieResponseData {
   rental_value: number;
   created_at?: Date;
   updated_at?: Date;
+  person?: MoviePersonResponseData;
   category: CategoryResponseData;
   rentals?: RentalResponseData[];
+}
+export interface MovieStockResponseData {
+  id?: number;
+  movie_id?: number;
+  person_id?: number;
+  created_at?: Date;
+  updated_at?: Date;
+  person?: MoviePersonResponseData;
+  movie?: MovieResponseData[];
 }
 
 export interface RentalResponseData {
