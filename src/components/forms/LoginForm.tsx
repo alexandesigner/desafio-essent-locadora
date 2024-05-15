@@ -30,7 +30,12 @@ function LoginForm() {
     }
   });
 
-  const { data: loginResponse, mutate: loginRequest, isSuccess, isError } = useLogin();
+  const {
+    data: loginResponse,
+    mutate: loginRequest,
+    isSuccess,
+    isError
+  } = useLogin();
 
   async function onSubmit(data: z.infer<typeof LoginPersonInputValidation>) {
     try {

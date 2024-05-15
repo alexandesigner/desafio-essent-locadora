@@ -16,7 +16,7 @@ function RentalCreate() {
           </div>
           <div className='flex items-center space-x-2'>
             <Link href='/admin/rentals' className='flex items-center gap-2'>
-              <ArrowLeft size="14px" />
+              <ArrowLeft size='14px' />
               Voltar
             </Link>
           </div>

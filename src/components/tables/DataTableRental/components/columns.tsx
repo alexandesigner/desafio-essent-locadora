@@ -28,8 +28,7 @@ const renderLabelAndColor = (status: string) => {
         color: 'bg-blue-400/10 text-blue-400 ring-blue-400/20'
       };
   }
-
-}
+};
 
 export const columns: ColumnDef<any>[] = [
   {

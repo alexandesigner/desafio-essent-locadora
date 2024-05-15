@@ -33,7 +33,7 @@ export default function DashboardStats() {
             </dt>
             <dd className='flex items-baseline'>
               {persons?.isLoading && (
-                <div className="flex w-full mt-2">
+                <div className='flex w-full mt-2'>
                   <Skeleton className='h-[24px] w-[28px] rounded-md' />
                 </div>
               )}
@@ -52,7 +52,7 @@ export default function DashboardStats() {
             </dt>
             <dd className='flex items-baseline'>
               {rentals?.isLoading && (
-                <div className="flex w-full mt-2">
+                <div className='flex w-full mt-2'>
                   <Skeleton className='h-[24px] w-[28px] rounded-md' />
                 </div>
               )}

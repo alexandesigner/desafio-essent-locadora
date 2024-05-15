@@ -9,7 +9,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import MainButton from './MainButton';
 import { Skeleton } from '../ui/skeleton';
 import { MovieResponseData } from '@/types';
-import { slugify, pluralize  } from '@/lib/utils';
+import { slugify, pluralize } from '@/lib/utils';
 import ListSkeleton from './ListSkeleton';
 
 const settings = {
@@ -78,7 +78,13 @@ function MoviesList({
           <Slider {...settings}>
             {data?.map((item) => (
               <div key={item.id} className='card-item px-4'>
-                <Link href={`/${slugify(item.category.name)}/${slugify(item.title)}`} title='Link' className="group block overflow-hidden rounded-lg">
+                <Link
+                  href={`/${slugify(item.category.name)}/${slugify(
+                    item.title
+                  )}`}
+                  title='Link'
+                  className='group block overflow-hidden rounded-lg'
+                >
                   <img
                     src={
                       item.thumb_image
@@ -101,7 +107,8 @@ function MoviesList({
                 </Link>
                 {item.stock?.length ? (
                   <span className='inline-flex items-center rounded-md bg-gray-400/10 px-2 py-1 text-xs font-medium text-gray-400 ring-1 ring-inset ring-gray-400/20'>
-                    {item.stock?.length} cópia{pluralize(item.stock?.length) ? 's' : ''}
+                    {item.stock?.length} cópia
+                    {pluralize(item.stock?.length) ? 's' : ''}
                   </span>
                 ) : undefined}
               </div>

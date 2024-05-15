@@ -9,7 +9,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import MainButton from './MainButton';
 import { Skeleton } from '../ui/skeleton';
 import { MovieResponseData } from '@/types';
-import { slugify, pluralize  } from '@/lib/utils';
+import { slugify, pluralize } from '@/lib/utils';
 import ListSkeleton from './ListSkeleton';
 
 const settings = {
@@ -62,10 +62,17 @@ function MoviePersonList({
         {isLoading ? (
           <ListSkeleton />
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-10">
+          <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-10'>
             {data?.map((item) => (
-              <div key={item.id} className='card-item px-4 justify-center flex flex-col items-center'>
-                <Link href={`/movies/${slugify(item.full_name)}/persons`} title='Link' className="group block overflow-hidden rounded-full w-[100px] h-[100px] sm:w-[180px] sm:h-[180px]">
+              <div
+                key={item.id}
+                className='card-item px-4 justify-center flex flex-col items-center'
+              >
+                <Link
+                  href={`/movies/${slugify(item.full_name)}/persons`}
+                  title='Link'
+                  className='group block overflow-hidden rounded-full w-[100px] h-[100px] sm:w-[180px] sm:h-[180px]'
+                >
                   <img
                     src={
                       item.avatar
@@ -80,7 +87,11 @@ function MoviePersonList({
                     }}
                   />
                 </Link>
-                <Link href='/' title='Link' className='hover:underline w-full text-center'>
+                <Link
+                  href='/'
+                  title='Link'
+                  className='hover:underline w-full text-center'
+                >
                   <h2 className='my-2 text-xl font-bold'>{item.full_name}</h2>
                 </Link>
               </div>

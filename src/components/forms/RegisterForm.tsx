@@ -57,7 +57,7 @@ function RegisterForm() {
     if (isSuccess && registerResponse?.meta?.ok) {
       toast({
         title: 'Cadastro realizado com sucesso! 🎉',
-        description: 'Você será redirecionado para o login',
+        description: 'Você será redirecionado para o login'
       });
       router.push('/login');
     }

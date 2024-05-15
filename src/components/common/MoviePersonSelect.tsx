@@ -88,21 +88,27 @@ function MoviePersonSelect({ form, hasEdit }: { form: any; hasEdit?: any }) {
     }
   }, [castOpts, handleSelectedId, hasEdit]);
 
-  const renderPersonOpts = (type: string, castOpts: SelectedCastType) => castOpts?.length ?
-    removeDuplicates(
-      castOpts
-        ?.filter((person: MovieResponseData) => person.type === type)
-        .map((person: MovieResponseData) => (
-          <SelectItem key={person.id} value={person.id} className="flex flex-row items-center">
-            <div className="flex flex-row items-center gap-2">
-              {selectedCast?.find((item) => item?.id === person?.id) ? (
-                <Check size="12px" />
-              ) : undefined}
-              {person.id} - {person?.full_name}
-            </div>
-          </SelectItem>
-        ))
-    ) : undefined;
+  const renderPersonOpts = (type: string, castOpts: SelectedCastType) =>
+    castOpts?.length
+      ? removeDuplicates(
+          castOpts
+            ?.filter((person: MovieResponseData) => person.type === type)
+            .map((person: MovieResponseData) => (
+              <SelectItem
+                key={person.id}
+                value={person.id}
+                className='flex flex-row items-center'
+              >
+                <div className='flex flex-row items-center gap-2'>
+                  {selectedCast?.find((item) => item?.id === person?.id) ? (
+                    <Check size='12px' />
+                  ) : undefined}
+                  {person.id} - {person?.full_name}
+                </div>
+              </SelectItem>
+            ))
+        )
+      : undefined;
 
   const renderDirectorOpts = renderPersonOpts('DIRECTOR', castOpts);
   const renderActorsOpts = renderPersonOpts('ACTOR', castOpts);

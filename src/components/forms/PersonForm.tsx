@@ -43,7 +43,7 @@ const defaultValues: Partial<PersonFormValues> = {};
 export function PersonForm({
   hasEdit
 }: {
-  hasEdit?: { id?: number;[key: string]: any } | null;
+  hasEdit?: { id?: number; [key: string]: any } | null;
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -75,7 +75,7 @@ export function PersonForm({
 
   async function onSubmit(request: PersonFormValues) {
     const generatedPass = Math.random().toString(36).slice(-8);
-    setRandomPassword(generatedPass)
+    setRandomPassword(generatedPass);
     try {
       setLoading(true);
       if (hasEdit?.id) {
@@ -90,8 +90,9 @@ export function PersonForm({
       });
     } catch (err: any) {
       toast({
-        title: `Houve um problema ao tentar ${hasEdit?.id ? 'atualizar' : 'criar'
-          } a pessoa!`,
+        title: `Houve um problema ao tentar ${
+          hasEdit?.id ? 'atualizar' : 'criar'
+        } a pessoa!`,
         description: 'Tente novamente mais tarde.'
       });
       console.error('@person/error', err?.response);
@@ -108,7 +109,7 @@ export function PersonForm({
         title: 'Pessoa atualizada com sucesso!  🎉',
         description: ``
       });
-      form.setValue('full_name', updatePerson?.data?.full_name)
+      form.setValue('full_name', updatePerson?.data?.full_name);
       refetch();
     }
   }, [form, isSuccessUpdate, refetch, updatePerson]);

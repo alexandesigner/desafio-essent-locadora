@@ -141,7 +141,9 @@ function Toolbar() {
                             Admin
                             <DropdownMenuShortcut>⇧⌘A</DropdownMenuShortcut>
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => router.push('/admin/profile')}>
+                          <DropdownMenuItem
+                            onClick={() => router.push('/admin/profile')}
+                          >
                             Perfil
                             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                           </DropdownMenuItem>
@@ -151,11 +153,15 @@ function Toolbar() {
                     ) : (
                       <>
                         <DropdownMenuGroup>
-                          <DropdownMenuItem onClick={() => router.push('/admin/profile')}>
+                          <DropdownMenuItem
+                            onClick={() => router.push('/admin/profile')}
+                          >
                             Minhas locações
                             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => router.push('/admin/profile')}>
+                          <DropdownMenuItem
+                            onClick={() => router.push('/admin/profile')}
+                          >
                             Perfil
                             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                           </DropdownMenuItem>

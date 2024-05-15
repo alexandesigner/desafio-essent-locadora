@@ -33,7 +33,7 @@ export function DataTableToolbar<TData>({
       <div className='flex flex-1 items-center space-x-2 max-w-[220px]'>
         <Select
           onValueChange={(v) => {
-            table.getColumn('status')?.setFilterValue(v)
+            table.getColumn('status')?.setFilterValue(v);
           }}
         >
           <SelectTrigger>

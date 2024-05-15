@@ -122,7 +122,7 @@ export function MoviePersonForm({
   useEffect(() => {
     if (isSuccessCreate && createPerson?.meta?.ok) {
       toast({
-        title: 'Pessoa criada com sucesso! 🎉',
+        title: 'Pessoa criada com sucesso! 🎉'
       });
       dialogClose();
     }

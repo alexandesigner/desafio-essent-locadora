@@ -6,7 +6,11 @@ import MoviesList from '@/components/common/MoviesList';
 import { useMovies } from '@/hooks/use-movies';
 import { usePersons } from '@/hooks/use-persons';
 import { groupByCategory } from '@/lib/utils';
-import { GroupedCategory, MovieResponseData, PersonResponseData } from '@/types';
+import {
+  GroupedCategory,
+  MovieResponseData,
+  PersonResponseData
+} from '@/types';
 import MoviePersonList from '@/components/common/MoviePersonList';
 import ListSkeleton from '@/components/common/ListSkeleton';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -27,14 +31,16 @@ export default function Home() {
           isLoading={!persons?.data?.meta?.ok}
         />
         {movies?.isLoading ? (
-          <div className="mx-4 w-full py-8 flex flex-col gap-4">
+          <div className='mx-4 w-full py-8 flex flex-col gap-4'>
             <Skeleton className='w-[220px] h-8 mb-8 mx-4' />
             <ListSkeleton />
           </div>
         ) : (
           moviesGrouped?.map((item: GroupedCategory) => (
             <React.Fragment key={item.id}>
-              {moviesGrouped.length > 1 && <div className='w-full h-[1px] mx-4 bg-gray-200 my-8'></div>}
+              {moviesGrouped.length > 1 && (
+                <div className='w-full h-[1px] mx-4 bg-gray-200 my-8'></div>
+              )}
               <MoviesList
                 title={item.title}
                 data={item.data}
