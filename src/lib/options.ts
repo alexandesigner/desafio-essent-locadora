@@ -17,3 +17,15 @@ export const moviePersonTypeKeys = {
   ACTOR: 'Ator',
   DIRECTOR: 'Diretor'
 };
+
+export const rentalStatusOpts = [
+  { value: 'DELAYED', label: 'Atrasado' },
+  { value: 'REGULAR', label: 'Regular' },
+  { value: 'DELIVERED', label: 'Entregue' }
+];
+
+export const rentalStatusKeys = {
+  DELAYED: 'Atrasado',
+  REGULAR: 'Regular',
+  DELIVERED: 'Entregue'
+};

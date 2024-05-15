@@ -83,9 +83,7 @@ export function MoviePersonForm({
           request
         });
       }
-      await createMoviePersonRequest({
-        data: request
-      });
+      await createMoviePersonRequest(request);
     } catch (err: any) {
       toast({
         title: `Houve um problema ao tentar ${
@@ -124,8 +122,7 @@ export function MoviePersonForm({
   useEffect(() => {
     if (isSuccessCreate && createPerson?.meta?.ok) {
       toast({
-        title: 'Pessoa criada com sucesso!',
-        description: ``
+        title: 'Pessoa criada com sucesso! 🎉',
       });
       dialogClose();
     }

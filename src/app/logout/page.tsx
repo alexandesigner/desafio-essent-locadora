@@ -1,10 +1,10 @@
 'use client';
 
-import React from 'react';
-import BaseLoading from '../../(private)/loading';
+import React, { useEffect } from 'react';
+import BaseLoading from '../(private)/loading';
 
 export default function Logout() {
-  React.useEffect(() => {
+  useEffect(() => {
     if (window) {
       setTimeout(() => {
         window.localStorage.removeItem('USER_TOKEN');

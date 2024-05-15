@@ -125,14 +125,18 @@ export function MovieForm({
   const renderCategories = parseIdAndNameToOpts(categories?.data?.data);
 
   const createMovieCastMany = useCallback(async () => {
-    if (!values?.cast?.connect?.length) return;
-    const castData = values?.cast?.connect;
-    const movieId = createMovie?.data?.id;
-    if (movieId) {
-      await createManyMoviePerson({
-        movieId,
-        castData
-      });
+    try {
+      if (!values?.cast?.connect?.length) return;
+      const castData = values?.cast?.connect;
+      const movieId = createMovie?.data?.id;
+      if (movieId) {
+        await createManyMoviePerson({
+          movieId,
+          castData
+        });
+      }
+    } catch (e) {
+      console.error('@movie/error', e);
     }
   }, [createManyMoviePerson, createMovie?.data?.id, values?.cast?.connect]);
 
@@ -157,9 +161,12 @@ export function MovieForm({
 
   useEffect(() => {
     if (isSuccessUpdate && updateMovie?.meta?.ok) {
-      form.reset({
-        title: updateMovie?.data?.title
+      toast({
+        title: 'Filme atualizado com sucesso!  🎉',
+        description: ``
       });
+      form.setValue('title', updateMovie?.data?.title);
+      refetch();
     }
   }, [form, isSuccessUpdate, refetch, updateMovie]);
 
@@ -167,6 +174,10 @@ export function MovieForm({
     if (isSuccessCreate && createMovie?.meta?.ok) {
       router.push(`/admin/movies/${createMovie?.data?.id}`);
       createMovieCastMany();
+      toast({
+        title: 'Filme criado com sucesso!  🎉',
+        description: ``
+      });
     }
   }, [isSuccessCreate, createMovie, router, createMovieCastMany]);
 
@@ -228,6 +239,7 @@ export function MovieForm({
                       });
                     }}
                     value={field.value?.connect?.id}
+                    disabled={loading}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -256,9 +268,6 @@ export function MovieForm({
               render={({ field }) => (
                 <FormItem className='relative'>
                   <FormLabel className='font-bold'>Valor da locação</FormLabel>
-                  {/* <span className='text-gray-500 absolute top-[32px] left-3 z-10'>
-                    R$
-                  </span> */}
                   <FormControl>
                     <Input
                       placeholder='Valor da locação'
@@ -282,13 +291,19 @@ export function MovieForm({
             <FormItem>
               <FormLabel className='font-bold'>Sinopse</FormLabel>
               <FormControl>
-                <Textarea placeholder='Escreva a sinopse' {...field} />
+                <Textarea
+                  placeholder='Escreva a sinopse'
+                  {...field}
+                  disabled={loading}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <MoviePersonSelect hasEdit={hasEdit} form={form} />
+
         <FormLabel className='font-bold text-2xl mt-8 flex w-full'>
           Imagens do filme
         </FormLabel>
@@ -313,7 +328,7 @@ export function MovieForm({
                       <div>
                         <button
                           type='button'
-                          className='rounded-md bg-secondary px-3 py-2 text-sm font-semibold text-primary shadow-sm hover:bg-black/10'
+                          className='rounded-md bg-white border-gray-200 border px-3 py-2 text-sm font-semibold text-primary shadow-sm hover:bg-black/10'
                         >
                           Alterar imagem de destaque
                         </button>
@@ -346,7 +361,7 @@ export function MovieForm({
                       <div>
                         <button
                           type='button'
-                          className='rounded-md bg-secondary px-3 py-2 text-sm font-semibold text-primary shadow-sm hover:bg-black/10'
+                          className='rounded-md bg-white border-gray-200 border px-3 py-2 text-sm font-semibold text-primary shadow-sm hover:bg-black/10'
                         >
                           Alterar imagem de miniatura
                         </button>

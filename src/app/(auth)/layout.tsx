@@ -17,7 +17,7 @@ export default function AuthLayout({
 
   const AuthWrapper = useMemo(
     () => (
-      <div className='flex flex-col'>
+      <div className='flex flex-col bg-gray-100 h-full min-h-screen'>
         <div className='flex-grow'>
           <div className='w-full flex flex-col justify-start my-8 items-center px-4'>
             <Link href='/' title='Link para o início'>

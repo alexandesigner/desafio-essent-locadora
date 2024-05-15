@@ -63,7 +63,7 @@ function LoginForm() {
           Preencha os campos abaixo para acessar
         </p>
       </div>
-      <div className='max-w-[420px] mx-auto border border-gray-200 rounded-lg p-6 mt-4'>
+      <div className='max-w-[420px] mx-auto border bg-white border-gray-300 rounded-lg p-6 mt-4'>
         <div className='self-center text-center'></div>
         <section className='max-w-[420px] w-full mx-auto flex'>
           <Form {...form}>

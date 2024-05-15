@@ -39,7 +39,7 @@ function Toolbar() {
   };
 
   const handleLogout = () => {
-    router.push('/auth/logout');
+    router.push('/logout');
   };
 
   const isLoading = categories?.isSuccess;

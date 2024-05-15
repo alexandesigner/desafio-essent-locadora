@@ -36,7 +36,8 @@ export const validateToken = async (
   token: string | null
 ): Promise<IValidatedToken | void | null> => {
   if (!token) {
-    throw new Error('Invalid Token');
+    // Throw Error and status code 401 if token is not provided
+    throw new Error('Token is required', 401);
   }
   try {
     const decodedToken: IValidatedToken | void = jwt.verify(

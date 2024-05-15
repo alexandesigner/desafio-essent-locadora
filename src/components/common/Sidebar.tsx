@@ -136,9 +136,9 @@ function Sidebar() {
                       {currentPerson?.email}
                     </span>
                   </div>
-                  <div className='absolute z-10 top-[32px] right-[12px]'>
+                  <div className='absolute z-10 top-[30px] right-[12px]'>
                     <button
-                      onClick={() => router.push('/auth/logout')}
+                      onClick={() => router.push('/logout')}
                       type='button'
                       className='z-50'
                     >

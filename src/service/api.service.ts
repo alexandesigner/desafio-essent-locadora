@@ -17,6 +17,7 @@ async function ApiService<T>(
     };
 
     const localStorageToken = localStorage.getItem('USER_TOKEN');
+
     if (localStorageToken) {
       headers['Authorization'] = `Bearer ${localStorageToken}`;
     }
@@ -30,6 +31,8 @@ async function ApiService<T>(
     if (!response.ok) {
       const res = await response.json();
       const sessionError =
+        res?.meta?.message === 'Invalid Credentials' ||
+        res?.meta?.message === 'Token is required' ||
         res?.meta?.message === 'jwt expired' ||
         res?.meta?.message === 'Cannot convert undefined or null to object';
 
@@ -42,10 +45,6 @@ async function ApiService<T>(
         title: 'API HTTP error',
         description: !!sessionError ? 'Session expired!' : res?.meta?.message
       });
-
-      if (typeof window !== 'undefined' && response.status === 401) {
-        window.localStorage.removeItem('USER_TOKEN');
-      }
 
       return;
     }

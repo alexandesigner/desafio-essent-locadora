@@ -38,14 +38,9 @@ const defaultValues: Partial<ProfileFormValues> = {};
 export function ProfileForm() {
   const [loading, setLoading] = useState(false);
 
-  const {
-    data: updatePerson,
-    mutate: updatePersonRequest,
-    isSuccess,
-    isPending
-  } = useUpdatePerson();
+  const { mutate: updatePersonRequest, isPending } = useUpdatePerson();
 
-  const { data: person, isLoading } = useQuery<Response<PersonResponseData>>({
+  const { data: person } = useQuery<Response<PersonResponseData>>({
     queryKey: ['auth']
   });
 

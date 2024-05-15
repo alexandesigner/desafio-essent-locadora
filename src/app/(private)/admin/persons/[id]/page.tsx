@@ -16,6 +16,7 @@ function PersonDetails({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const person = usePersonById(params?.id, { enabled: !!params?.id });
+
   const personData = person?.data?.data as PersonResponseData;
 
   useEffect(() => {

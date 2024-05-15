@@ -10,6 +10,27 @@ import { DataTableColumnHeader } from './data-table-column-header';
 import { DataTableRowActions } from './data-table-row-actions';
 import { formatCurrency, formatDateLocale } from '@/lib/utils';
 
+const renderLabelAndColor = (status: string) => {
+  switch (status) {
+    case 'DELAYED':
+      return {
+        label: 'Atrasado',
+        color: 'bg-red-400/10 text-red-400 ring-red-400/20'
+      };
+    case 'DELIVERED':
+      return {
+        label: 'Entregue',
+        color: 'bg-green-400/10 text-green-400 ring-green-400/20'
+      };
+    default:
+      return {
+        label: 'Regular',
+        color: 'bg-blue-400/10 text-blue-400 ring-blue-400/20'
+      };
+  }
+
+}
+
 export const columns: ColumnDef<any>[] = [
   {
     id: 'select',
@@ -39,24 +60,6 @@ export const columns: ColumnDef<any>[] = [
     accessorKey: 'id',
     header: ({ column }) => <DataTableColumnHeader column={column} name='ID' />,
     cell: ({ row }) => <div className='w-[32px]'>{row.getValue('id')}</div>,
-    enableSorting: false,
-    enableHiding: false
-  },
-  {
-    accessorKey: 'movie_stock',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} name='Filme' />
-    ),
-    cell: ({ row }) => (
-      <div className='w-[80px] font-bold'>
-        <Link
-          href={`/admin/movies/${row.getValue('movie_stock')?.movie.id}`}
-          className='hover:underline'
-        >
-          {row.getValue('movie_stock')?.movie.title}
-        </Link>
-      </div>
-    ),
     enableSorting: false,
     enableHiding: false
   },
@@ -91,28 +94,40 @@ export const columns: ColumnDef<any>[] = [
     enableHiding: false
   },
   {
+    accessorKey: 'movie_stock',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} name='Filme' />
+    ),
+    cell: ({ row }) => (
+      <div className='w-[80px] font-bold'>
+        <Link
+          href={`/admin/movies/${row.getValue('movie_stock')?.movie.id}`}
+          className='hover:underline'
+        >
+          {row.getValue('movie_stock')?.movie.title}
+        </Link>
+      </div>
+    ),
+    enableSorting: false,
+    enableHiding: false
+  },
+  {
     accessorKey: 'status',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} name='Status' />
     ),
     cell: ({ row }) => (
       <div className='min-w-[80px]'>
-        <span className='inline-flex items-center rounded-md bg-gray-400/10 px-2 py-1 text-xs font-bold text-gray-400 ring-1 ring-inset ring-gray-400/20'>
-          {row.getValue('status')}
+        <span
+          className={`
+            ${renderLabelAndColor(row.getValue('status'))?.color}
+            inline-flex items-center rounded-md px-2 py-1 text-xs font-bold ring-1 ring-inset
+          `}
+        >
+          {renderLabelAndColor(row.getValue('status'))?.label}
         </span>
       </div>
     )
-  },
-  {
-    accessorKey: 'late_fee',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} name='Taxa de atraso' />
-    ),
-    cell: ({ row }) => (
-      <div className='w-[80px]'>{formatCurrency(row.getValue('late_fee'))}</div>
-    ),
-    enableSorting: false,
-    enableHiding: false
   },
   {
     accessorKey: 'withdrawal_at',
@@ -154,9 +169,20 @@ export const columns: ColumnDef<any>[] = [
     enableHiding: false
   },
   {
+    accessorKey: 'late_fee',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} name='Valor de atraso' />
+    ),
+    cell: ({ row }) => (
+      <div className='w-[80px]'>{formatCurrency(row.getValue('late_fee'))}</div>
+    ),
+    enableSorting: false,
+    enableHiding: false
+  },
+  {
     accessorKey: 'total_amount',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} name='Preço total' />
+      <DataTableColumnHeader column={column} name='Valor total' />
     ),
     cell: ({ row }) => (
       <div className='w-[80px]'>

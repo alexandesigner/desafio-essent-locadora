@@ -57,7 +57,7 @@ export interface PersonResponseData {
   id: number;
   email: string;
   avatar?: string;
-  type: keyof PersonType | string;
+  type: 'USER' | 'CLIENT' | undefined;
   full_name: string;
   is_verified: boolean;
   created_at?: Date;
@@ -68,7 +68,7 @@ export interface PersonResponseData {
 
 export interface MoviePersonResponseData {
   id: number;
-  type: keyof MoviePersonType | string;
+  type: 'DIRECTOR' | 'ACTOR' | undefined;
   full_name: string;
   avatar?: string;
   created_at?: Date;

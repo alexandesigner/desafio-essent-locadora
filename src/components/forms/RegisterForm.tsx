@@ -56,7 +56,7 @@ function RegisterForm() {
   useEffect(() => {
     if (isSuccess && registerResponse?.meta?.ok) {
       toast({
-        title: 'Cadastro realizado com sucesso!',
+        title: 'Cadastro realizado com sucesso! 🎉',
         description: 'Você será redirecionado para o login',
       });
       router.push('/login');
@@ -73,7 +73,7 @@ function RegisterForm() {
           Preencha os campos abaixo para concluir o cadastro
         </p>
       </div>
-      <div className='max-w-[420px] mx-auto border border-gray-200 rounded-lg p-6 mt-4'>
+      <div className='max-w-[420px] mx-auto bg-white border-gray-300 border rounded-lg p-6 mt-4'>
         <div className='self-center text-center'></div>
         <section className='max-w-[420px] w-full mx-auto flex'>
           <Form {...form}>

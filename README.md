@@ -1,7 +1,7 @@
 # Desafio Essent Locadora
 
 # ☁️ Link da aplicação
-> https://app.dev
+> https://main.d1v1teoor9g5gm.amplifyapp.com
 
 
 # ⛏️ Instalação
