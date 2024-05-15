@@ -27,3 +27,11 @@ export const deleteRental = async (id: number) =>
   await ApiService<Response<RentalResponseData>>(`/api/v1/rentals/${id}`, {
     method: 'DELETE'
   });
+
+export const getMyRentals = async () =>
+  await ApiService<Response<RentalResponseData[]>>('/api/v1/rentals/person');
+
+export const getMyRentalById = async (id: number) =>
+  await ApiService<Response<RentalResponseData>>(
+    `/api/v1/rentals/person/${id}`
+  );
