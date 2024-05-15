@@ -80,6 +80,8 @@ function MoviesList({
               <div key={item.id} className='card-item px-4'>
                 <Link
                   href={`/${slugify(item.category.name)}/${slugify(
+                    item.id
+                  )}_${slugify(
                     item.title
                   )}`}
                   title='Link'

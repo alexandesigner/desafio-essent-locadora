@@ -72,11 +72,13 @@ function Toolbar() {
       {/* DESKTOP */}
       <div className=' hidden lg:block  p-4'>
         <div className='flex justify-between mx-[41px] items-center relative'>
-          <img
-            src='https://youoatiwlsqmiivcqzoa.supabase.co/storage/v1/object/public/essent-locadora/logo-blue.svg'
-            alt='Logo Essent'
-            width='192'
-          />
+          <Link href="/" title="Página inicial">
+            <img
+              src='https://youoatiwlsqmiivcqzoa.supabase.co/storage/v1/object/public/essent-locadora/logo-blue.svg'
+              alt='Logo Essent'
+              width='192'
+            />
+          </Link>
           {isLoading ? (
             <div className='flex gap-[10px] xl:gap-[42px] text-[16px] items-center select-none'>
               {categories?.data?.data?.map((category: CategoryResponseData) => (
