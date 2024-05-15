@@ -4,7 +4,9 @@ import {
   getRentalById,
   createRental,
   deleteRental,
-  updateRental
+  updateRental,
+  getMyRentals,
+  getMyRentalById
 } from '@/service/rental/http';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -51,5 +53,21 @@ export const useDeleteRental = () => {
     mutationFn: (id: number) => {
       return deleteRental(id);
     }
+  });
+};
+
+export const useMyRentals = (config: { enabled: boolean }) => {
+  return useQuery({
+    queryKey: ['my-rentals'],
+    queryFn: async () => getMyRentals(),
+    ...config
+  });
+};
+
+export const useMyRentalById = (id: number, config: { enabled: boolean }) => {
+  return useQuery({
+    queryKey: ['my-rental-by-id', id],
+    queryFn: async () => getMyRentalById(id),
+    ...config
   });
 };
