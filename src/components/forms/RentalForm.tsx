@@ -38,29 +38,42 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
+import {
+  parseIdAndNameToOpts,
+  formatStringCurrencyToNumber,
+  formatBRLCurrency
+} from '@/lib/utils';
 import { RentalInputValidation } from '@/lib/validations';
 import { useCreateRental, useUpdateRental } from '@/hooks/use-rentals';
 import { RentalCreateInputObjectSchema } from '../../../prisma/generated/schemas';
 import { useMovies } from '@/hooks/use-movies';
 import { usePersons } from '@/hooks/use-persons';
+import { rentalStatusOpts } from '@/lib/options';
 
-const RentalFormSchema = RentalCreateInputObjectSchema;
+const RentalFormSchema = RentalCreateInputObjectSchema.pick({
+  withdrawal_at: true,
+  due_at: true,
+  late_fee: true,
+  total_amount: true,
+  status: true,
+  movie_stock: {
+    connect: {
+      id: true
+    }
+  },
+  renter: {
+    connect: {
+      id: true
+    }
+  }
+})
+  .extend({ total_amount: z.string(), late_fee: z.string() })
+  .strict()
+  .required();
 
 type RentalFormValues = z.infer<typeof RentalFormSchema>;
 
 const defaultValues: Partial<RentalFormValues> = {};
-
-const languages = [
-  { label: 'English', value: 'en' },
-  { label: 'French', value: 'fr' },
-  { label: 'German', value: 'de' },
-  { label: 'Spanish', value: 'es' },
-  { label: 'Portuguese', value: 'pt' },
-  { label: 'Russian', value: 'ru' },
-  { label: 'Japanese', value: 'ja' },
-  { label: 'Korean', value: 'ko' },
-  { label: 'Chinese', value: 'zh' }
-] as const;
 
 export function RentalForm({
   hasEdit
@@ -107,10 +120,19 @@ export function RentalForm({
       if (hasEdit?.id) {
         return await updateRentalRequest({
           id: hasEdit?.id,
-          request
+          request: {
+            ...request,
+            total_amount: formatStringCurrencyToNumber(request.total_amount),
+            late_fee: formatStringCurrencyToNumber(request.late_fee)
+          }
         });
       }
-      await createRentalRequest(request);
+      await createRentalRequest({
+        ...request,
+
+        total_amount: formatStringCurrencyToNumber(request.total_amount),
+        late_fee: formatStringCurrencyToNumber(request.late_fee)
+      });
     } catch (err: any) {
       console.error('@rental/error', err?.response);
     } finally {
@@ -127,6 +149,9 @@ export function RentalForm({
       });
     }
   }, [form, hasEdit]);
+
+  console.log('errors', form.formState.errors);
+  console.log('VALUES', form.watch());
 
   useEffect(() => {
     if (isSuccessUpdate && updateRental?.meta?.ok) {
@@ -145,20 +170,6 @@ export function RentalForm({
   return (
     <Form {...form}>
       <form className='space-y-8'>
-        {/* <FormField
-          control={form.control}
-          name='name'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className='font-bold'>Nome</FormLabel>
-              <FormControl>
-                <Input placeholder='Nome' {...field} disabled={loading} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
-
         <div className='w-full grid grid-cols-1 lg:grid-cols-2 gap-8'>
           <div className='w-full'>
             <FormField
@@ -260,14 +271,21 @@ export function RentalForm({
             {hasEdit?.id ? (
               <FormField
                 control={form.control}
-                name='movie'
+                name='movie_stock'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className='font-bold'>Filme</FormLabel>
                     {field.value && (
                       <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        onValueChange={(value) => {
+                          const element = movies?.data?.data?.find(
+                            (item) => item.id === +value
+                          );
+                          field.onChange({
+                            connect: { id: element?.id }
+                          });
+                        }}
+                        value={field.value?.connect?.id}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -290,13 +308,20 @@ export function RentalForm({
             ) : (
               <FormField
                 control={form.control}
-                name='movie'
+                name='movie_stock'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className='font-bold'>Filme</FormLabel>
                     <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      onValueChange={(value) => {
+                        const element = movies?.data?.data?.find(
+                          (item) => item.id === +value
+                        );
+                        field.onChange({
+                          connect: { id: element?.id }
+                        });
+                      }}
+                      value={field.value?.connect?.id}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -321,14 +346,21 @@ export function RentalForm({
             {hasEdit?.id ? (
               <FormField
                 control={form.control}
-                name='person'
+                name='renter'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className='font-bold'>Cliente</FormLabel>
                     {field.value && (
                       <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        onValueChange={(value) => {
+                          const element = persons?.data?.data?.find(
+                            (item) => item.id === +value
+                          );
+                          field.onChange({
+                            connect: { id: element?.id }
+                          });
+                        }}
+                        value={field.value?.connect?.id}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -351,13 +383,20 @@ export function RentalForm({
             ) : (
               <FormField
                 control={form.control}
-                name='person'
+                name='renter'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className='font-bold'>Cliente</FormLabel>
                     <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      onValueChange={(value) => {
+                        const element = persons?.data?.data?.find(
+                          (item) => item.id === +value
+                        );
+                        field.onChange({
+                          connect: { id: element?.id }
+                        });
+                      }}
+                      value={field.value?.connect?.id}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -378,6 +417,92 @@ export function RentalForm({
               />
             )}
           </div>
+        </div>
+
+        <div className='w-full grid grid-cols-1 lg:grid-cols-2 gap-8'>
+          <div className='w-full'>
+            <FormField
+              control={form.control}
+              name='late_fee'
+              render={({ field }) => (
+                <FormItem className='relative'>
+                  <FormLabel className='font-bold'>Taxa de atraso</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder='Taxa de atraso'
+                      {...field}
+                      disabled={loading}
+                      onChange={(e) => {
+                        field.onChange(formatBRLCurrency(e.target.value));
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className='w-full'>
+            <FormField
+              control={form.control}
+              name='total_amount'
+              render={({ field }) => (
+                <FormItem className='relative'>
+                  <FormLabel className='font-bold'>Preço total</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder='Preço total'
+                      {...field}
+                      disabled={loading}
+                      onChange={(e) => {
+                        field.onChange(formatBRLCurrency(e.target.value));
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <div className='w-full grid-grid-cols-1 lg:grid-cols-2 gap-8'>
+          <div className='w-full'>
+            <FormField
+              control={form.control}
+              name='status'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='font-bold'>Status</FormLabel>
+                  <Select
+                    onValueChange={(value) => {
+                      const element = rentalStatusOpts?.find(
+                        (item) => item.value === value
+                      );
+                      field.onChange(element?.value);
+                    }}
+                    value={field.value?.connect?.id}
+                    disabled={loading}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder='Selecione o status' />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {rentalStatusOpts?.map((item) => (
+                        <SelectItem key={item.value} value={item.value}>
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div />
         </div>
         <MainButton
           text={hasEdit?.id ? 'Atualizar' : 'Adicionar'}

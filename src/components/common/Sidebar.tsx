@@ -29,45 +29,62 @@ function Sidebar() {
         current: true,
         name: 'Dashboard',
         href: '/admin/dashboard',
-        icon: LayoutDashboard
+        icon: LayoutDashboard,
+        isVisible: currentPerson?.type === 'USER'
       },
       {
         current: false,
         name: 'Filmes',
         href: '/admin/movies',
-        icon: Clapperboard
+        icon: Clapperboard,
+        isVisible: currentPerson?.type === 'USER'
       },
       {
         current: false,
         name: 'Locações',
         href: '/admin/rentals',
-        icon: BookmarkCheck
+        icon: BookmarkCheck,
+        isVisible: currentPerson?.type === 'USER'
       },
       {
         current: false,
         name: 'Pessoas',
         href: '/admin/persons',
-        icon: Users
+        icon: Users,
+        isVisible: currentPerson?.type === 'USER'
       },
       {
         current: false,
         name: 'Categorias',
         href: '/admin/categories',
-        icon: Tag
+        icon: Tag,
+        isVisible: currentPerson?.type === 'USER'
+      },
+      {
+        current: false,
+        name: 'Minhas locações',
+        href: '/admin/rentals/person',
+        icon: BookmarkCheck,
+        isVisible: currentPerson?.type === 'CLIENT'
       },
       {
         current: false,
         name: 'Perfil',
         href: '/admin/profile',
-        icon: User
+        icon: User,
+        isVisible: true
       }
     ];
-  }, []);
+  }, [currentPerson?.type]);
+
+  const handleCurrentPage = (href: string) => {
+    return router.asPath === href;
+  };
 
   return (
-    <div className='hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col'>
+    <div className='hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col m-4 rounded-2xl overflow-hidden'>
       <div className='flex grow flex-col gap-y-5 overflow-y-auto bg-primary px-6'>
-        <div className='flex h-16 py-4 shrink-0 items-center'>
+        <div className='flex h-16 py-4 shrink-0 items-center mt-2'>
           <img
             className='h-8 w-auto my-4 flex'
             src={
@@ -89,32 +106,45 @@ function Sidebar() {
         <nav className='flex flex-1 flex-col'>
           <ul role='list' className='flex flex-1 flex-col gap-y-7'>
             <li>
-              <ul role='list' className='-mx-2 space-y-1'>
-                {navigationOpts?.map((item) => (
-                  <li key={item.name}>
-                    <Link
-                      href={item.href}
-                      className={clsx(
-                        item.current
-                          ? 'bg-primary text-white'
-                          : 'text-indigo-200 hover:text-white hover:bg-black hover:bg-opacity-15',
-                        'group flex gap-x-3 rounded-md p-3 text-md leading-6 font-bold'
+              {!currentPerson && (
+                <li>
+                  <div className='flex flex-col justify-center gap-4'>
+                    <Skeleton className='h-[24px] w-[100px] rounded-md' />
+                    <Skeleton className='h-[24px] w-[80px] rounded-md' />
+                    <Skeleton className='h-[24px] w-full rounded-md' />
+                    <Skeleton className='h-[24px] w-[200px] rounded-md' />
+                    <Skeleton className='h-[24px] w-[220px] rounded-md' />
+                  </div>
+                </li>
+              )}
+              {currentPerson && (
+                <ul role='list' className='-mx-2 space-y-1'>
+                  {navigationOpts?.map((item) => (
+                    <>
+                      {item?.isVisible ? (
+                        <li key={item.name}>
+                          <Link
+                            href={item.href}
+                            className={clsx(
+                              'flex items-center gap-4 px-2 py-2 rounded-lg text-white hover:bg-black hover:bg-opacity-15',
+                              {
+                                'bg-black bg-opacity-15': handleCurrentPage(
+                                  item.href as string
+                                )
+                              }
+                            )}
+                          >
+                            <item.icon size='20px' />
+                            <span>{item.name}</span>
+                          </Link>
+                        </li>
+                      ) : (
+                        <div />
                       )}
-                    >
-                      <item.icon
-                        className={clsx(
-                          item.current
-                            ? 'text-white'
-                            : 'text-indigo-200 group-hover:text-white',
-                          'h-6 w-6 shrink-0'
-                        )}
-                        aria-hidden='true'
-                      />
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+                    </>
+                  ))}
+                </ul>
+              )}
             </li>
             {currentPerson ? (
               <li className='-mx-6 mt-auto fle flex-col'>
@@ -129,7 +159,7 @@ function Sidebar() {
                     </AvatarFallback>
                   </Avatar>
                   <div className='flex flex-col'>
-                    <span className='text-white'>
+                    <span className='text-white font-bold'>
                       {currentPerson?.full_name}
                     </span>
                     <span className='text-white text-xs text-opacity-50'>

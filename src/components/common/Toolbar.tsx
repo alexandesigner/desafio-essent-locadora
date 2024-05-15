@@ -107,7 +107,7 @@ function Toolbar() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant='ghost'
-                      className='relative h-8 w-8 rounded-full'
+                      className='relative h-8 w-8 rounded-full shadow-lg ring-offset-2 ring-2 ring-primary'
                     >
                       <Avatar className='h-9 w-9'>
                         <AvatarImage
@@ -123,7 +123,7 @@ function Toolbar() {
                   <DropdownMenuContent className='w-56' align='end' forceMount>
                     <DropdownMenuLabel className='font-normal'>
                       <div className='flex flex-col space-y-1'>
-                        <p className='text-sm font-medium leading-none'>
+                        <p className='text-sm font-bold leading-none'>
                           {currentPerson?.full_name}
                         </p>
                         <p className='text-xs leading-none text-muted-foreground'>
@@ -132,19 +132,37 @@ function Toolbar() {
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem
-                        onClick={() => router.push('/admin/dashboard')}
-                      >
-                        Admin
-                        <DropdownMenuShortcut>⇧⌘A</DropdownMenuShortcut>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        Perfil
-                        <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator />
+                    {currentPerson?.type === 'USER' ? (
+                      <>
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem
+                            onClick={() => router.push('/admin/dashboard')}
+                          >
+                            Admin
+                            <DropdownMenuShortcut>⇧⌘A</DropdownMenuShortcut>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => router.push('/admin/profile')}>
+                            Perfil
+                            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator />
+                      </>
+                    ) : (
+                      <>
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem onClick={() => router.push('/admin/profile')}>
+                            Minhas locações
+                            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => router.push('/admin/profile')}>
+                            Perfil
+                            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
                     <DropdownMenuItem onClick={handleLogout}>
                       Desconectar
                       <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
@@ -183,10 +201,7 @@ function Toolbar() {
           </div>
           <div className='flex items-center gap-[40px]'>
             {menu ? (
-              <X
-                className='cursor-pointer text-primary'
-                onClick={toggleMenu}
-              />
+              <X className='cursor-pointer text-primary' onClick={toggleMenu} />
             ) : (
               <img
                 src='/svgs/hamburger.svg'

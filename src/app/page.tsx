@@ -34,13 +34,13 @@ export default function Home() {
         ) : (
           moviesGrouped?.map((item: GroupedCategory) => (
             <React.Fragment key={item.id}>
+              {moviesGrouped.length > 1 && <div className='w-full h-[1px] mx-4 bg-gray-200 my-8'></div>}
               <MoviesList
                 title={item.title}
                 data={item.data}
                 slugPath={item.slugPath}
                 isLoading={!movies?.data?.meta?.ok}
               />
-              <div className='w-full h-[1px] mx-4 bg-gray-200 my-8'></div>
             </React.Fragment>
           ))
         )}

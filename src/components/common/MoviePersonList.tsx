@@ -57,7 +57,7 @@ function MoviePersonList({
   isLoading?: boolean;
 }) {
   return (
-    <div className='moviepersonlist-carousel animate-in fade-in w-full flex flex-col mb-8 border-b pb-8'>
+    <div className='moviepersonlist-carousel animate-in fade-in w-full flex flex-col mb-12'>
       <div className='slick-wrapper h-full w-full'>
         {isLoading ? (
           <ListSkeleton />

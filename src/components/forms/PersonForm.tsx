@@ -242,7 +242,7 @@ export function PersonForm({
                   Verificação
                 </FormLabel>
                 <FormDescription>
-                  Você receberá um e-mail para confirmar a sua conta.
+                  Verificar conta do usuário, confirmar os dados.
                 </FormDescription>
               </div>
               <FormControl>

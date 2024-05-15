@@ -7,30 +7,9 @@ import { useRentals } from '@/hooks/use-rentals';
 import { usePersons } from '@/hooks/use-persons';
 import { Skeleton } from '@/components/ui/skeleton';
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
-
-export default function Example() {
+export default function DashboardStats() {
   const persons = usePersons({ enabled: true });
   const rentals = useRentals({ enabled: true });
-
-  const stats = [
-    {
-      id: 1,
-      name: 'Total de pessoas',
-      stat: persons?.data?.meta?.pagination?.total_elements || 0,
-      change: '123',
-      changeType: 'increase'
-    },
-    {
-      id: 3,
-      name: 'Total de locações',
-      stat: rentals?.data?.meta?.pagination?.total_elements || 0,
-      change: '3.2%',
-      changeType: 'decrease'
-    }
-  ];
   return (
     <div>
       <div className='flex flex-wrap gap-2 items-center'>
@@ -53,11 +32,12 @@ export default function Example() {
               </p>
             </dt>
             <dd className='flex items-baseline'>
-              {!persons ? (
-                <div className="flex w-full">
-                  Carregando...
+              {persons?.isLoading && (
+                <div className="flex w-full mt-2">
+                  <Skeleton className='h-[24px] w-[28px] rounded-md' />
                 </div>
-              ) : (
+              )}
+              {!persons?.isLoading && (
                 <p className='text-2xl text-gray-900 font-bold'>
                   {persons?.data?.meta?.pagination?.total_elements}
                 </p>
@@ -71,11 +51,12 @@ export default function Example() {
               </p>
             </dt>
             <dd className='flex items-baseline'>
-              {!rentals ? (
-                <div className="flex w-full">
-                  Carregando...
+              {rentals?.isLoading && (
+                <div className="flex w-full mt-2">
+                  <Skeleton className='h-[24px] w-[28px] rounded-md' />
                 </div>
-              ) : (
+              )}
+              {!rentals?.isLoading && (
                 <p className='text-2xl text-gray-900 font-bold'>
                   {rentals?.data?.meta?.pagination?.total_elements}
                 </p>
