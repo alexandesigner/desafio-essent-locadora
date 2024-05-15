@@ -81,7 +81,7 @@ function Toolbar() {
           </Link>
           {isLoading ? (
             <div className='flex gap-[10px] xl:gap-[42px] text-[16px] items-center select-none'>
-              {categories?.data?.data?.map((category: CategoryResponseData) => (
+              {categories?.data?.data?.slice(0, 9)?.map((category: CategoryResponseData) => (
                 <Link
                   href={`/${slugify(category.name)}`}
                   key={category.id}
