@@ -38,8 +38,8 @@ async function ApiService<T>(
 
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: !!sessionError ? 'Sessão expirada!' : res?.meta?.message
+        title: 'API HTTP error',
+        description: !!sessionError ? 'Session expired!' : res?.meta?.message
       });
 
       return;

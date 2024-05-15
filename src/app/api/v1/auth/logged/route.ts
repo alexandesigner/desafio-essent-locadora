@@ -11,14 +11,13 @@ export async function GET(req: Request) {
       if (decoded?.id) {
         response = await PersonService.getPersonById(+decoded?.id);
         return successResponse(response, 'Person logged successfully', 200);
-      } else {
-        return errorResponse('Invalid token', 403);
       }
+      return errorResponse('Invalid token', 401);
     }
     return errorResponse('Unauthorized', 401);
   } catch (err: any) {
-    const jwtExpired = (err as any)?.message === 'jwt expired';
-    jwtExpired ? ('Sessão expirada!', 401) : ((err as any)?.message, 400);
-    return errorResponse(jwtExpired);
+    return (err as any)?.message === 'jwt expired'
+      ? errorResponse('Session expired!', 401)
+      : errorResponse((err as any)?.message, 400);
   }
 }
