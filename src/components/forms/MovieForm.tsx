@@ -34,7 +34,8 @@ import {
 import {
   useCreateMovie,
   useUpdateMovie,
-  useCreateManyMoviePerson
+  useCreateManyMoviePerson,
+  useCreateManyMovieStock
 } from '@/hooks/use-movies';
 import { MovieCreateInputObjectSchema } from '../../../prisma/generated/schemas';
 
@@ -48,7 +49,7 @@ const MovieFormSchema = MovieCreateInputObjectSchema.pick({
   featured_image: true,
   thumb_image: true
 })
-  .extend({ rental_value: z.string() })
+  .extend({ rental_value: z.string(), movie_stock: z.string() })
   .strict()
   .required();
 
@@ -74,12 +75,12 @@ export function MovieForm({
   } = useUpdateMovie();
 
   const { mutate: createManyMoviePerson } = useCreateManyMoviePerson();
+  const { mutate: createManyMovieStock } = useCreateManyMovieStock();
 
   const {
     data: createMovie,
     mutate: createMovieRequest,
-    isSuccess: isSuccessCreate,
-    isPending: isPendingCreate
+    isSuccess: isSuccessCreate
   } = useCreateMovie();
 
   const { refetch } = useQuery({
@@ -99,6 +100,7 @@ export function MovieForm({
       setLoading(true);
 
       delete request.cast;
+      delete request.movie_stock;
 
       if (hasEdit?.id) {
         return await updateMovieRequest({
@@ -160,6 +162,8 @@ export function MovieForm({
     }
   }, [form, hasEdit]);
 
+  const valeus = form.watch();
+
   useEffect(() => {
     if (isSuccessUpdate && updateMovie?.meta?.ok) {
       toast({
@@ -174,13 +178,26 @@ export function MovieForm({
   useEffect(() => {
     if (isSuccessCreate && createMovie?.meta?.ok) {
       router.push(`/admin/movies/${createMovie?.data?.id}`);
+      if (+values?.movie_stock && createMovie?.data?.id) {
+        createManyMovieStock({
+          movieId: createMovie.data.id!,
+          amount: +values?.movie_stock
+        });
+      }
       createMovieCastMany();
       toast({
         title: 'Filme criado com sucesso!  🎉',
         description: ``
       });
     }
-  }, [isSuccessCreate, createMovie, router, createMovieCastMany]);
+  }, [
+    isSuccessCreate,
+    createMovie,
+    router,
+    createMovieCastMany,
+    values?.movie_stock,
+    createManyMovieStock
+  ]);
 
   return (
     <Form {...form}>
@@ -277,6 +294,28 @@ export function MovieForm({
                       onChange={(e) => {
                         field.onChange(formatBRLCurrency(e.target.value));
                       }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className='w-full'>
+            <FormField
+              control={form.control}
+              name='movie_stock'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='font-bold'>
+                    Quantidade em estoque
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder='Quantidade em estoque'
+                      className='h-[40px] w-full rounded-large'
+                      type='number'
                     />
                   </FormControl>
                   <FormMessage />

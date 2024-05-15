@@ -31,7 +31,7 @@ function RentalDetails({
           <div>
             {rentalData?.renter ? (
               <h3 className='text-4xl font-bold text-primary'>
-                {rentalData?.renter?.id}
+                {rentalData?.renter?.full_name}
               </h3>
             ) : (
               <Skeleton className='w-[180px] h-[38px] rounded-md' />

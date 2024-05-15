@@ -1,3 +1,4 @@
+import qs from 'query-string';
 import ApiService from '../api.service';
 import {
   MoviePersonResponseData,
@@ -16,8 +17,10 @@ const MovieFormSchema = MovieInputValidateSchema;
 
 type MovieFormValues = z.infer<typeof MovieFormSchema>;
 
-export const getMovies = async (name?: string) =>
-  await ApiService<Response<MovieResponseData[]>>('/api/v1/movies');
+export const getMovies = async (params: any) =>
+  await ApiService<Response<MovieResponseData[]>>(
+    `/api/v1/movies?${qs.stringify(params)}`
+  );
 
 export const getMovieById = async (id: number) =>
   await ApiService<Response<MovieResponseData>>(`/api/v1/movies/${id}`);
@@ -40,10 +43,14 @@ export const deleteMovie = async (id: number) =>
   });
 
 export const getMoviePerson = async (name?: string) =>
-  await ApiService<Response<MovieResponseData[]>>('/api/v1/movies/persons');
+  await ApiService<Response<MoviePersonResponseData[]>>(
+    '/api/v1/movies/persons'
+  );
 
 export const getMoviePersonById = async (id: number) =>
-  await ApiService<Response<MovieResponseData>>(`/api/v1/movies/persons/${id}`);
+  await ApiService<Response<MoviePersonResponseData>>(
+    `/api/v1/movies/persons/${id}`
+  );
 
 export const createMoviePerson = async (
   request: typeof MoviePersonUncheckedCreateInputObjectSchema
@@ -64,6 +71,17 @@ export const createMoviePersonMany = async (movieId: number, request: any) =>
       body: {
         movieId,
         castData: request
+      }
+    }
+  );
+export const createMovieStockMany = async (movieId: number, amount: number) =>
+  await ApiService<Response<MoviePersonResponseData[]>>(
+    '/api/v1/movies/stock',
+    {
+      method: 'POST',
+      body: {
+        movieId,
+        amount
       }
     }
   );

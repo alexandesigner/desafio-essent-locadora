@@ -80,10 +80,8 @@ function MoviesList({
               <div key={item.id} className='card-item px-4'>
                 <Link
                   href={`/${slugify(item.category.name)}/${slugify(
-                    item.id
-                  )}_${slugify(
-                    item.title
-                  )}`}
+                    item?.id
+                  )}_${slugify(item.title)}`}
                   title='Link'
                   className='group block overflow-hidden rounded-lg'
                 >

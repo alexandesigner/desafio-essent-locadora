@@ -5,6 +5,7 @@ import { MovieService } from '@/service/movie';
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
+    const all = searchParams.get('all');
     const page = searchParams.get('page');
     const limit = searchParams.get('limit');
     const paginate = { page: Number(page) || 1, limit: Number(limit) || 10 };
@@ -22,10 +23,21 @@ export async function GET(req: Request) {
       }
     };
 
-    const { content, pagination } = await MovieService.getAllMovies(
-      paginate,
-      query
-    );
+    if (all) {
+      const content = await MovieService.getAllMovies(
+        { ...paginate },
+        query,
+        true
+      );
+
+      return successResponse(
+        content,
+        'Movies listing fetched successfully',
+        200
+      );
+    }
+
+    const { content, pagination } = await MovieService.getAllMovies(query);
 
     return successResponse(
       content,

@@ -69,9 +69,9 @@ function MoviePersonList({
                 className='card-item px-4 justify-center flex flex-col items-center'
               >
                 <Link
-                  href={`/movies/${slugify(
-                    item.id
-                  )}_${slugify(item.full_name)}/persons`}
+                  href={`/movies/${slugify(item.id)}_${slugify(
+                    item.full_name
+                  )}/persons`}
                   title='Link'
                   className='group block overflow-hidden rounded-full w-[100px] h-[100px] sm:w-[180px] sm:h-[180px]'
                 >

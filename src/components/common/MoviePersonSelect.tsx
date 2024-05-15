@@ -15,48 +15,46 @@ import {
   FormItem,
   FormLabel
 } from '@/components/ui/form';
-import { removeDuplicates, removeEmptyValuesFromList } from '@/lib/utils';
+import { removeEmptyValuesFromList } from '@/lib/utils';
 import { useMoviePerson } from '@/hooks/use-movies';
-import { MovieResponseData } from '@/types';
+import { MoviePersonResponseData } from '@/types';
 
-export type SelectedCastType = MovieResponseData[] | [];
+export type SelectedCastType = MoviePersonResponseData[] | [];
 
 function MoviePersonSelect({ form, hasEdit }: { form: any; hasEdit?: any }) {
   const moviePerson = useMoviePerson({ enabled: true });
   const moviePersonData = moviePerson?.data?.data;
-  const [castOpts, setCastOpts] = useState(moviePersonData);
+  const [castOpts, setCastOpts] = useState<SelectedCastType>(moviePersonData);
   const [selectedCast, setSelectedCast] = useState<SelectedCastType>([]);
 
   const handleChange = (value: number) => {
     const cast = moviePersonData?.find(
-      (movie: MovieResponseData) => movie?.id === value
+      (movie: MoviePersonResponseData) => movie?.id === +value
     );
     const hasItem = selectedCast?.find(
-      (movie: MovieResponseData) => movie?.id === value
+      (movie: MoviePersonResponseData) => movie?.id === +value
     );
 
     if (cast?.id && !hasItem) {
       setSelectedCast([...selectedCast, cast]);
-      const removedItem = castOpts?.filter(
-        (movie: MovieResponseData) => movie?.id !== value
-      );
     }
-
     if (hasItem) {
       setSelectedCast(
-        selectedCast?.filter((movie: MovieResponseData) => movie?.id !== value)
+        selectedCast?.filter(
+          (movie: MoviePersonResponseData) => movie?.id !== +value
+        )
       );
     }
   };
 
   const handleRemove = (id: number) => {
     setSelectedCast(
-      selectedCast?.filter((movie: MovieResponseData) => movie?.id !== id)
+      selectedCast?.filter((movie: MoviePersonResponseData) => movie?.id !== id)
     );
   };
 
   useEffect(() => {
-    if (!castOpts?.length && moviePersonData?.length) {
+    if (moviePersonData?.length) {
       setCastOpts(moviePersonData);
     }
   }, [castOpts, moviePersonData]);
@@ -71,18 +69,18 @@ function MoviePersonSelect({ form, hasEdit }: { form: any; hasEdit?: any }) {
     }
   }, [castOpts, form, selectedCast, hasEdit]);
 
-  const handleSelectedId = useCallback((id, cast) => {
-    setSelectedCast((prev: MovieResponseData) => {
-      if (!prev.find((item: MovieResponseData) => item.id === id)) {
-        return [...prev, cast?.find((el: MovieResponseData) => el.id === id)];
-      }
-      return prev;
+  const handleSelectedId = useCallback((id: number, cast: any) => {
+    setSelectedCast(() => {
+      const castData = cast?.find(
+        (person: MoviePersonResponseData) => person.id === id
+      );
+      return castData ? [...selectedCast, castData] : selectedCast;
     });
   }, []);
 
   useEffect(() => {
     if (hasEdit?.cast?.length && castOpts?.length) {
-      hasEdit.cast.forEach((item) => {
+      hasEdit.cast.forEach((item: MoviePersonResponseData) => {
         handleSelectedId(item.id, castOpts);
       });
     }
@@ -90,24 +88,24 @@ function MoviePersonSelect({ form, hasEdit }: { form: any; hasEdit?: any }) {
 
   const renderPersonOpts = (type: string, castOpts: SelectedCastType) =>
     castOpts?.length
-      ? removeDuplicates(
-          castOpts
-            ?.filter((person: MovieResponseData) => person.type === type)
-            .map((person: MovieResponseData) => (
-              <SelectItem
-                key={person.id}
-                value={person.id}
-                className='flex flex-row items-center'
-              >
-                <div className='flex flex-row items-center gap-2'>
-                  {selectedCast?.find((item) => item?.id === person?.id) ? (
-                    <Check size='12px' />
-                  ) : undefined}
-                  {person.id} - {person?.full_name}
-                </div>
-              </SelectItem>
-            ))
-        )
+      ? castOpts
+          ?.filter((person: MoviePersonResponseData) => person.type === type)
+          .map((person: MoviePersonResponseData) => (
+            <SelectItem
+              key={person.id}
+              value={String(person.id)}
+              className='flex flex-row items-center'
+            >
+              <div className='flex flex-row items-center gap-2'>
+                {selectedCast?.find(
+                  (item: MoviePersonResponseData) => item?.id === person?.id
+                ) ? (
+                  <Check size='12px' />
+                ) : undefined}
+                {person.id} - {person?.full_name}
+              </div>
+            </SelectItem>
+          ))
       : undefined;
 
   const renderDirectorOpts = renderPersonOpts('DIRECTOR', castOpts);
@@ -122,10 +120,7 @@ function MoviePersonSelect({ form, hasEdit }: { form: any; hasEdit?: any }) {
           render={({ field }) => (
             <FormItem>
               <FormLabel className='font-bold'>Elenco</FormLabel>
-              <Select
-                onValueChange={(v) => handleChange(v)}
-                defaultValue={field.value}
-              >
+              <Select onValueChange={(v: any) => handleChange(v)}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder='Selecione as pessoas para o elenco' />

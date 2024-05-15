@@ -1,29 +1,29 @@
 'use client';
 
 import Link from 'next/link';
-import { CopyIcon } from '@radix-ui/react-icons';
 import { columns } from '@/components/tables/DataTableMovie/components/columns';
 import { DataTable } from '@/components/tables/DataTableMovie/components/data-table';
 import MainButton from '@/components/common/MainButton';
 import { useMovies } from '@/hooks/use-movies';
 import TableSkeleton from '@/components/common/TableSkeleton';
 import MoviePersonForm from '@/components/forms/MoviePersonForm';
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 
 function Movies() {
-  const movies = useMovies({ enabled: true });
+  const movies = useMovies(
+    {
+      all: true
+    },
+    { enabled: true }
+  );
   return (
     <>
       <div className='h-full flex-1 flex-col space-y-8 py-4 px-8 flex'>

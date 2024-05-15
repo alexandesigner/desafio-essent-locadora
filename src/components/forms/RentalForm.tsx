@@ -10,13 +10,9 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import MainButton from '@/components/common/MainButton';
-import { moviePersonTypeOpts } from '@/lib/options';
-import { personTypeOpts } from '@/lib/options';
-import { Switch } from '@/components/ui/switch';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -38,12 +34,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import {
-  parseIdAndNameToOpts,
-  formatStringCurrencyToNumber,
-  formatBRLCurrency
-} from '@/lib/utils';
-import { RentalInputValidation } from '@/lib/validations';
+import { formatStringCurrencyToNumber, formatBRLCurrency } from '@/lib/utils';
 import { useCreateRental, useUpdateRental } from '@/hooks/use-rentals';
 import { RentalCreateInputObjectSchema } from '../../../prisma/generated/schemas';
 import { useMovies } from '@/hooks/use-movies';
@@ -67,7 +58,16 @@ const RentalFormSchema = RentalCreateInputObjectSchema.pick({
     }
   }
 })
-  .extend({ total_amount: z.string(), late_fee: z.string() })
+  .extend({
+    total_amount: z.string(),
+    late_fee: z.string(),
+    status: z.object({
+      // @ts-ignore
+      connect: z.object({
+        id: z.string()
+      })
+    })
+  })
   .strict()
   .required();
 
@@ -84,20 +84,18 @@ export function RentalForm({
   const [loading, setLoading] = useState(false);
 
   const persons = usePersons({ enabled: true });
-  const movies = useMovies({ enabled: true });
+  const movies = useMovies({ all: true }, { enabled: true });
 
   const {
     data: updateRental,
     mutate: updateRentalRequest,
-    isSuccess: isSuccessUpdate,
-    isPending: isPendingUpdate
+    isSuccess: isSuccessUpdate
   } = useUpdateRental();
 
   const {
     data: createRental,
     mutate: createRentalRequest,
-    isSuccess: isSuccessCreate,
-    isPending: isPendingCreate
+    isSuccess: isSuccessCreate
   } = useCreateRental();
 
   const {
@@ -117,21 +115,23 @@ export function RentalForm({
   async function onSubmit(request: RentalFormValues) {
     try {
       setLoading(true);
+
       if (hasEdit?.id) {
         return await updateRentalRequest({
           id: hasEdit?.id,
           request: {
             ...request,
             total_amount: formatStringCurrencyToNumber(request.total_amount),
-            late_fee: formatStringCurrencyToNumber(request.late_fee)
+            late_fee: formatStringCurrencyToNumber(request.late_fee),
+            status: request?.status?.connect?.id
           }
         });
       }
       await createRentalRequest({
         ...request,
-
         total_amount: formatStringCurrencyToNumber(request.total_amount),
-        late_fee: formatStringCurrencyToNumber(request.late_fee)
+        late_fee: formatStringCurrencyToNumber(request.late_fee),
+        status: request?.status?.connect?.id
       });
     } catch (err: any) {
       console.error('@rental/error', err?.response);
@@ -145,25 +145,51 @@ export function RentalForm({
   useEffect(() => {
     if (hasEdit) {
       form.reset({
-        status: hasEdit?.status
+        withdrawal_at: hasEdit?.withdrawal_at,
+        due_at: hasEdit?.due_at,
+        late_fee: formatBRLCurrency(hasEdit?.late_fee),
+        total_amount: formatBRLCurrency(hasEdit?.total_amount),
+        movie_stock: {
+          connect: {
+            id: hasEdit?.movie_stock?.id
+          }
+        },
+        renter: {
+          connect: {
+            id: hasEdit?.renter_id
+          }
+        },
+        status: {
+          connect: {
+            id: hasEdit?.status
+          }
+        }
+      });
+      form.setValue('movie_stock', {
+        connect: {
+          id: hasEdit?.movie_stock?.id
+        }
       });
     }
   }, [form, hasEdit]);
 
-  console.log('errors', form.formState.errors);
-  console.log('VALUES', form.watch());
-
   useEffect(() => {
     if (isSuccessUpdate && updateRental?.meta?.ok) {
-      // form.reset({
-      //   name:  updateRental?.data?.name
-      // });
+      toast({
+        title: 'Locação atualizada com sucesso!  🎉',
+        description: ``
+      });
+      refetch();
     }
   }, [form, isSuccessUpdate, refetch, updateRental]);
 
   useEffect(() => {
     if (isSuccessCreate && createRental?.meta?.ok) {
       router.push(`/admin/rentals/${createRental?.data?.id}`);
+      toast({
+        title: 'Locação criada com sucesso!  🎉',
+        description: ``
+      });
     }
   }, [isSuccessCreate, createRental, router]);
 
@@ -467,7 +493,7 @@ export function RentalForm({
         </div>
 
         <div className='w-full grid-grid-cols-1 lg:grid-cols-2 gap-8'>
-          <div className='w-full'>
+          <div className='w-1/2'>
             <FormField
               control={form.control}
               name='status'
@@ -476,10 +502,15 @@ export function RentalForm({
                   <FormLabel className='font-bold'>Status</FormLabel>
                   <Select
                     onValueChange={(value) => {
+                      if (!value) return;
                       const element = rentalStatusOpts?.find(
                         (item) => item.value === value
                       );
-                      field.onChange(element?.value);
+                      field.onChange({
+                        connect: {
+                          id: element?.value
+                        }
+                      });
                     }}
                     value={field.value?.connect?.id}
                     disabled={loading}

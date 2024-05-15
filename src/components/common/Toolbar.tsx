@@ -72,7 +72,7 @@ function Toolbar() {
       {/* DESKTOP */}
       <div className=' hidden lg:block  p-4'>
         <div className='flex justify-between mx-[41px] items-center relative'>
-          <Link href="/" title="Página inicial">
+          <Link href='/' title='Página inicial'>
             <img
               src='https://youoatiwlsqmiivcqzoa.supabase.co/storage/v1/object/public/essent-locadora/logo-blue.svg'
               alt='Logo Essent'
@@ -81,15 +81,17 @@ function Toolbar() {
           </Link>
           {isLoading ? (
             <div className='flex gap-[10px] xl:gap-[42px] text-[16px] items-center select-none'>
-              {categories?.data?.data?.slice(0, 9)?.map((category: CategoryResponseData) => (
-                <Link
-                  href={`/${slugify(category.name)}`}
-                  key={category.id}
-                  className={`hover:text-primary hover:underline cursor-pointer flex items-center gap-2 font-bold text-primary`}
-                >
-                  {category.name}
-                </Link>
-              ))}
+              {categories?.data?.data
+                ?.slice(0, 9)
+                ?.map((category: CategoryResponseData) => (
+                  <Link
+                    href={`/${slugify(category.name)}`}
+                    key={category.id}
+                    className={`hover:text-primary hover:underline cursor-pointer flex items-center gap-2 font-bold text-primary`}
+                  >
+                    {category.name}
+                  </Link>
+                ))}
             </div>
           ) : (
             <div className='hidden xl:flex flex-wrap gap-[16px] items-center select-none'>

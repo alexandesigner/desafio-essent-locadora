@@ -122,7 +122,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      {pageable && <DataTablePagination table={table} />}
+      <DataTablePagination table={table} />
     </div>
   );
 }

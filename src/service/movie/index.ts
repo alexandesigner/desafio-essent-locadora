@@ -6,12 +6,40 @@ import { withPagination } from '../api.utils';
 export const MovieService = {
   // Movie
   async getAllMovies(
-    { page, limit }: ParamsWithPagination = { page: 1, limit: 10 },
-    opts?: any
+    { page, limit }: ParamsWithPagination | undefined = { page: 1, limit: 10 },
+    opts?: any,
+    all?: boolean
   ) {
+    if (all) {
+      return db.movie.findMany({
+        include: {
+          category: true,
+          cast: {
+            include: {
+              person: true
+            }
+          },
+          stock: true
+        },
+        ...opts
+      });
+    }
+
+    const query = {
+      include: {
+        category: true,
+        cast: {
+          include: {
+            person: true
+          }
+        },
+        stock: true
+      }
+    };
     return withPagination({
       model: db.movie,
       pagination: { page, limit },
+      ...query,
       ...opts
     });
   },
@@ -20,7 +48,11 @@ export const MovieService = {
     const query = {
       include: {
         category: true,
-        cast: true,
+        cast: {
+          include: {
+            person: true
+          }
+        },
         stock: true
       }
     };
@@ -84,6 +116,19 @@ export const MovieService = {
 
         return createdCast;
       })
+    );
+
+    return created;
+  },
+
+  async createMovieStockMany(movieId: number, amount: number) {
+    const created = await Promise.all(
+      Array(amount)
+        .fill(amount)
+        ?.map(async () => {
+          const inStock = await this.addMovieStock(movieId);
+          return inStock;
+        })
     );
 
     return created;

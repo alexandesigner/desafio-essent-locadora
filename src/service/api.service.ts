@@ -31,6 +31,7 @@ async function ApiService<T>(
     if (!response.ok) {
       const res = await response.json();
       const sessionError =
+        res?.meta?.message === 'Session expired!' ||
         res?.meta?.message === 'Invalid Credentials' ||
         res?.meta?.message === 'Token is required' ||
         res?.meta?.message === 'jwt expired' ||

@@ -8,15 +8,16 @@ import {
   updateMoviePerson,
   deleteMoviePerson,
   getMoviePerson,
-  createMoviePersonMany
+  createMoviePersonMany,
+  createMovieStockMany
 } from '@/service/movie/http';
 import { Prisma } from '@prisma/client';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-export const useMovies = (config: { enabled: boolean }) => {
+export const useMovies = (params, config: { enabled: boolean }) => {
   return useQuery({
     queryKey: ['movies'],
-    queryFn: async () => getMovies(),
+    queryFn: async () => getMovies(params),
     ...config
   });
 };
@@ -41,6 +42,14 @@ export const useCreateManyMoviePerson = () => {
   return useMutation({
     mutationFn: ({ movieId, castData }: { movieId: number; castData: any }) => {
       return createMoviePersonMany(movieId, castData);
+    }
+  });
+};
+
+export const useCreateManyMovieStock = () => {
+  return useMutation({
+    mutationFn: ({ movieId, amount }: { movieId: number; amount: number }) => {
+      return createMovieStockMany(movieId, amount);
     }
   });
 };
