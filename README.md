@@ -22,7 +22,6 @@ pnpm run build
 ```bash
 pnpm run tests
 ```
-
 ## 🔓 Tecnologias
 - Typescript
 - Nextjs
@@ -32,6 +31,21 @@ pnpm run tests
 - Tailwindcss & shadcn
 - React Query
 - Docker
+
+## 🔓 Informações
+
+- Pessoa USER gerencia o admin
+- Pessoa CLIENT é o cliente propriamente
+- Todo cadastro feito no site é feito para o CLIENT
+  
+```
+USER
+
+email: user@email.com
+senha: secret123
+
+```
+
 
 ---
 Feito com amor ❤️ por Allan Alexandre https://github.com/alexandesigner

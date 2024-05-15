@@ -19,7 +19,7 @@ function MoviePersonList({
           <ListSkeleton />
         ) : (
           <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-10'>
-            {data?.map((item: MovieStockResponseData) => (
+            {data?.map((item: MovieStockResponseData & MoviePersonResponseData) => (
               <div
                 key={item.id}
                 className='card-item px-4 justify-center flex flex-col items-center'
@@ -27,11 +27,11 @@ function MoviePersonList({
                 <div className='group block overflow-hidden rounded-full w-[100px] h-[100px] sm:w-[180px] sm:h-[180px]'>
                   <img
                     src={
-                      item?.person?.avatar
-                        ? item?.person?.avatar
+                      item?.avatar || item?.person?.avatar
+                        ? item?.avatar || item?.person?.avatar
                         : 'https://youoatiwlsqmiivcqzoa.supabase.co/storage/v1/object/public/essent-locadora/thumb.png'
                     }
-                    alt={item?.person?.full_name}
+                    alt={item?.full_name || item?.person?.full_name}
                     className='w-[100px] h-[100px] sm:w-[180px] sm:h-[180px] object-cover rounded-full transition-all duration-300 group-hover:scale-125'
                     onError={(e) => {
                       e.currentTarget.src =
@@ -41,7 +41,7 @@ function MoviePersonList({
                 </div>
                 <div className='hover:underline w-full text-center'>
                   <h2 className='my-2 text-xl font-bold'>
-                    {item?.person?.full_name}
+                    {item?.full_name || item?.person?.full_name}
                   </h2>
                 </div>
               </div>
