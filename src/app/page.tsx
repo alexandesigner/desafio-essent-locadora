@@ -74,7 +74,7 @@ export default function Home() {
             <h3 className='text-7xl text-white font-bold'>
               {randomMovie?.title}
             </h3>
-            <p className='text-white text-lg mt-4'>{randomMovie?.title}</p>
+            <p className='text-white text-lg mt-4'>{randomMovie?.synopsis}</p>
             <Link
               href={`/${slugify(randomMovie?.category?.name)}/${
                 randomMovie?.id

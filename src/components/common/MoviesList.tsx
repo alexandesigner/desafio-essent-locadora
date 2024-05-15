@@ -6,7 +6,6 @@ import Slider from 'react-slick';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import MainButton from './MainButton';
 import { Skeleton } from '../ui/skeleton';
 import { MovieResponseData } from '@/types';
 import { slugify, pluralize } from '@/lib/utils';
@@ -16,7 +15,7 @@ const settings = {
   dots: true,
   infinite: false,
   speed: 500,
-  slidesToShow: 4,
+  slidesToShow: 5,
   slidesToScroll: 1,
   centerMode: false,
   variableWidth: true,
@@ -65,7 +64,7 @@ function MoviesList({
           {isLoading ? (
             <Skeleton className='w-[220px] h-8 mb-8 mx-4' />
           ) : (
-            <h3 className='text-3xl px-4 font-bold text-primary w-full text-left mb-6'>
+            <h3 className='text-5xl px-4 font-bold text-primary w-full text-left mb-6'>
               {title}
             </h3>
           )}
@@ -77,7 +76,7 @@ function MoviesList({
         ) : (
           <Slider {...settings}>
             {data?.map((item) => (
-              <div key={item.id} className='card-item px-4'>
+              <div key={item.id} className='card-item max-w-[320px] px-4'>
                 <Link
                   href={`/${slugify(item.category.name)}/${slugify(
                     item?.id
@@ -103,7 +102,7 @@ function MoviesList({
                   {item.category?.name}
                 </span>
                 <Link href='/' title='Link' className='hover:underline'>
-                  <h2 className='my-2 text-xl font-bold'>{item.title}</h2>
+                  <h2 className='my-2 text-2xl font-bold'>{item.title}</h2>
                 </Link>
                 {item.stock?.length ? (
                   <span className='inline-flex items-center rounded-md bg-gray-400/10 px-2 py-1 text-xs font-medium text-gray-400 ring-1 ring-inset ring-gray-400/20'>
@@ -116,19 +115,6 @@ function MoviesList({
           </Slider>
         )}
       </div>
-      {isLoading ? (
-        <Skeleton className='w-[120px] h-[48px] mx-4 my-8' />
-      ) : (
-        <>
-          {data && data?.length > 5 ? (
-            <footer className='px-4 py-8'>
-              <Link href={slugPath ?? '/'}>
-                <MainButton text='Ver mais' width='full_width' size='large' />
-              </Link>
-            </footer>
-          ) : undefined}
-        </>
-      )}
     </div>
   );
 }
